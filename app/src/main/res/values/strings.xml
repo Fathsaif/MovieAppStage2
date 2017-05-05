@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">MovieApp</string>
+    <string name="api_key">febf361b8850bffd17e944202d512e89</string>
+    <string name="mark_fav">Mark as Favorite</string>
+    <string name="watch_trailer">Watch Trailer</string>
+    <string name="movie_name">Interstellar</string>
+</resources>

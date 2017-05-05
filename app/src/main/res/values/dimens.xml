@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- padding dimens-->
+    <dimen name="small_padding">2dp</dimen>
+    <dimen name="meduim_padding">4dp</dimen>
+    <dimen name="large_padding">8dp</dimen>
+    <!-- margin dimens-->
+<dimen name="small_margin">8dp</dimen>
+    <dimen name="meduim_margin">16dp</dimen>
+    <dimen name="large_margin">32dp</dimen>
+    <!-- trailers dimens-->
+    <dimen name="trailers_width">250dp</dimen>
+    <dimen name="trailers_hight">250dp</dimen>
+    <!-- poster dimens-->
+    <dimen name="poster_width">200dp</dimen>
+    <dimen name="poster_hight">290dp</dimen>
+
+</resources>

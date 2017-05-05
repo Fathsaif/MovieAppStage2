@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:foreground="?android:attr/selectableItemBackground">
+    <ImageView
+        android:id="@+id/trailer_image"
+        android:layout_width="@dimen/trailers_width"
+        android:layout_height="@dimen/trailers_hight"
+        android:layout_marginTop="@dimen/small_margin"
+        android:layout_marginRight="@dimen/small_margin"
+        android:scaleType="centerCrop"/>
+    >
+
+
+</FrameLayout>
