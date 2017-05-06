@@ -3,7 +3,9 @@ package com.saif.movieapp;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -49,6 +51,7 @@ public class DetailsActivity extends AppCompatActivity implements TrailerAdapter
     String api_key = "febf361b8850bffd17e944202d512e89";
     RecyclerView rRecycleView;
     Movie movies;
+    ImageView fav;
     RecyclerView tRecyclerView;
     ReviewAdapter mReviewAdapter;
     TrailerAdapter mTrailAdapter;
@@ -58,21 +61,24 @@ public class DetailsActivity extends AppCompatActivity implements TrailerAdapter
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.details_activity);
-        tRecyclerView = (RecyclerView) findViewById(R.id.trailers_list);
+         tRecyclerView = (RecyclerView) findViewById(R.id.trailers_list);
         rRecycleView = (RecyclerView) findViewById(R.id.review_list);
         LinearLayoutManager vLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
         rRecycleView.setLayoutManager(vLayoutManager);
         LinearLayoutManager hLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false);
         tRecyclerView.setLayoutManager(hLayoutManager);
-        TextView tvOriginalTitle = (TextView) findViewById(R.id.movie_name_tv);
+               TextView tvOriginalTitle = (TextView) findViewById(R.id.movie_name_tv);
         ImageView ivPoster = (ImageView) findViewById(R.id.movie_poster_iv);
         TextView tvOverView = (TextView) findViewById(R.id.movie_overview);
         TextView tvReleaseDate = (TextView) findViewById(R.id.movie_date_released);
         RatingBar ratingBar = (RatingBar) findViewById(R.id.ratingBar);
         TextView rateValue = (TextView) findViewById(R.id.rate_tv);
-
-        Intent intent =getIntent();
+       Intent intent =getIntent();
          movies = intent.getParcelableExtra("details");
+         fav = (ImageView) findViewById(R.id.fav_icon);
+         if (isFavorite()){
+             fav.setImageResource(android.R.drawable.star_big_on);
+         }
         mReviewAdapter = new ReviewAdapter(reviews,this);
          rRecycleView.setAdapter(mReviewAdapter);
          rRecycleView.setHasFixedSize(true);
@@ -97,7 +103,7 @@ public class DetailsActivity extends AppCompatActivity implements TrailerAdapter
             tvOverView.setText(overview);
             tvReleaseDate.setText(date);
             rateValue.setText(rate);
-            ratingBar.setRating(Float.parseFloat(rate));
+           ratingBar.setRating(Float.parseFloat(rate));
             ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
                 @Override
                 public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
@@ -109,11 +115,17 @@ public class DetailsActivity extends AppCompatActivity implements TrailerAdapter
 
             //ArrayList<Trailer> trailers = mTrailAdapter.getTrailers();
         }
+
     }
 
     public void saveFavorite (View view){
+        if (isFavorite()){
+            removeFav();
+        }
+        else {
+        fav.setImageResource(android.R.drawable.star_big_on);
         ContentValues values = new ContentValues();
-        values.put(MovieContract.MovieEntry._ID,
+        values.put(MovieContract.MovieEntry.COLUMN_MOVIE_ID,
                 movies.getId());
         values.put(MovieContract.MovieEntry.MOVIE_TITLE_COLOUMN,
                 movies.getTitle());
@@ -129,16 +141,15 @@ public class DetailsActivity extends AppCompatActivity implements TrailerAdapter
                 movies.getImage2());
         ContentResolver contentResolver = getBaseContext().getContentResolver();
         contentResolver.insert(MovieContract.MovieEntry.CONTENT_URI,values);
+        }
     }
 
-    public void watchTrailer (View view){
-        trailers = mTrailAdapter.getTrailers();
-        String key = trailers.get(0).getKey();
-        String trailerUrl = "http://www.youtube.com/watch?v="+key;
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(trailerUrl));
-        startActivity(intent);
-    }
+    private void removeFav() {
 
+        fav.setImageResource(android.R.drawable.star_big_off);
+        getContentResolver().delete(MovieContract.MovieEntry.CONTENT_URI,
+                MovieContract.MovieEntry.COLUMN_MOVIE_ID +"=" +movies.getId(),null);
+    }
     @Override
     public void watch(String key) {
         String trailerUrl = "http://www.youtube.com/watch?v="+key;
@@ -215,5 +226,24 @@ public class DetailsActivity extends AppCompatActivity implements TrailerAdapter
                 Toast.makeText(getApplicationContext(),"no trailers found",Toast.LENGTH_LONG);
             }
         }
+
     }
+
+    private boolean isFavorite() {
+        Cursor movieCursor = getContentResolver().query(
+                MovieContract.MovieEntry.CONTENT_URI,
+                new String[]{MovieContract.MovieEntry.COLUMN_MOVIE_ID},
+                MovieContract.MovieEntry.COLUMN_MOVIE_ID + " = " + movies.getId(),
+                null,
+                null);
+
+        if (movieCursor != null && movieCursor.moveToFirst()) {
+            movieCursor.close();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
 }

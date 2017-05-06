@@ -9,20 +9,28 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-        <include layout="@layout/movie_info"/>
-<TextView
-    android:id="@+id/movie_date_released"
-    android:text="date"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"/>
+
+        <include layout="@layout/movie_info" />
+
         <TextView
             android:id="@+id/movie_overview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/meduim_margin"
+            android:layout_marginLeft="@dimen/small_margin"
             android:text="this is simple overview for the selected movie"
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
             android:textColor="@android:color/black"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Trailers"
+            android:layout_marginTop="@dimen/small_margin"
+            android:layout_marginBottom="@dimen/small_margin"
+            android:layout_gravity="center_horizontal"
+            android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+
+            />
         <android.support.v7.widget.RecyclerView
             android:id="@+id/trailers_list"
             android:orientation="horizontal"
@@ -30,6 +38,15 @@
             android:layout_height="wrap_content"
             >
         </android.support.v7.widget.RecyclerView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Reviews"
+            android:layout_marginTop="@dimen/meduim_margin"
+            android:layout_gravity="center_horizontal"
+            android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+
+            />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/review_list"

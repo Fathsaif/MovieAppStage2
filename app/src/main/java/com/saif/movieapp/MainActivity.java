@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,17 +50,37 @@ public class MainActivity extends AppCompatActivity  {
     GridView mMoviesGrid;
     List<Movie> movie = new ArrayList<>();
     GridAdapter mGridAdapter;
-    MovieDbHelper movieDbHelper;
+    ProgressBar progressBar;
     MovieListTask task;
     private static final String POPULARITY_DESC = "popular";
     private static final String RATING_DESC = "top_rated";
     public final static String FAVORITES = "favorites";
     private String mSortBy = POPULARITY_DESC;
 
+    private static final String[] MOVIE_COLUMNS = {
+            MovieContract.MovieEntry._ID,
+            MovieContract.MovieEntry.COLUMN_MOVIE_ID,
+            MovieContract.MovieEntry.MOVIE_TITLE_COLOUMN,
+            MovieContract.MovieEntry.COLUMN_MOVIE_POSTER_PATH,
+            MovieContract.MovieEntry.COLUMN_MOVIE_BACKDROP_PATH,
+            MovieContract.MovieEntry.COLUMN_MOVIE_OVERVIEW,
+            MovieContract.MovieEntry.COLUMN_MOVIE_VOTE_AVERAGE,
+            MovieContract.MovieEntry.COLUMN_MOVIE_RELEASE_DATE
+    };
+
+    public static final int COL_MOVIE_ID = 1;
+    public static final int COL_MOVIE_TITLE = 2;
+    public static final int COL_MOVIE_POSTER_PATH = 3;
+    public static final int COL_MOVIE_BACKDROP_PATH = 4;
+    public static final int COL_MOVIE_OVERVIEW = 5;
+    public static final int COL_MOVIE_VOTE_AVERAGE = 6;
+    public static final int COL_MOVIE_RELEASE_DATE = 7;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        progressBar = (ProgressBar) findViewById(R.id.progress);
         mMoviesGrid = (GridView) findViewById(R.id.movies_grid);
         mMoviesGrid.setOnItemClickListener(onItemClickListener);
         task =new MovieListTask();
@@ -135,25 +156,38 @@ public class MainActivity extends AppCompatActivity  {
     }
 };
     public class MovieListTask extends AsyncTask<String,Void,List<Movie>> {
-        String JsonResult = "";
         String api_key = "febf361b8850bffd17e944202d512e89";
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
         @Override
         protected List<Movie> doInBackground(String... params) {
 
             String mSort = params[0];
             if (mSort.equals(FAVORITES)){
-                Cursor cursor = getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,null,null,null,null);
+                Cursor cursor = getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,MOVIE_COLUMNS,
+                        null,null,null);
                 List<Movie> movies = new ArrayList<>();
                 Movie movieObject = new Movie();
                // int totalMovies = cursor.getCount();
-                if (cursor.moveToFirst()){
-                        movieObject.setTitle(cursor.getString(cursor.getColumnIndex("title")));
-                        movieObject.setDate(cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_RELEASE_DATE)));
-                        movieObject.setImage(cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_POSTER_PATH)));
-                        movieObject.setImage2(cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_BACKDROP_PATH)));
-                        movieObject.setOverview(cursor.getString(cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_OVERVIEW)));
-                    movies.add(movieObject);
-                        cursor.moveToFirst();
+                if (cursor!=null && cursor.moveToFirst()){
+                    do {
+                        movieObject.setId((cursor.getLong(COL_MOVIE_ID)));
+                        movieObject.setTitle(cursor.getString(COL_MOVIE_TITLE));
+                        movieObject.setImage(cursor.getString(COL_MOVIE_POSTER_PATH));
+                        movieObject.setImage2(cursor.getString(COL_MOVIE_BACKDROP_PATH));
+                        movieObject.setOverview(cursor.getString(COL_MOVIE_OVERVIEW));
+                        movieObject.setRating(cursor.getString(COL_MOVIE_VOTE_AVERAGE));
+                        movieObject.setDate(cursor.getString(COL_MOVIE_RELEASE_DATE));
+
+                        movies.add(movieObject);
+                    }while (cursor.moveToNext());
+
+                    cursor.close();
                 }
                 return movies;
             }
@@ -176,7 +210,7 @@ public class MainActivity extends AppCompatActivity  {
         @Override
         protected void onPostExecute(List<Movie> movies) {
             super.onPostExecute(movies);
-
+            progressBar.setVisibility(View.INVISIBLE);
             mGridAdapter.setmMoviesData(movies);
             movie.addAll(movies);
             //mtext.setText(JsonResult);

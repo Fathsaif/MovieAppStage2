@@ -11,15 +11,15 @@ import com.google.gson.annotations.SerializedName;
 
 public class Movie implements Parcelable {
     @SerializedName("id")
-    private int id;
+    private Long id;
     @SerializedName("original_title")
     private String title;
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -81,7 +81,7 @@ public class Movie implements Parcelable {
     @SerializedName("release_date")
     private String date; // release_date
 
-    public Movie(int id, String title, String image, String image2, String overview, String rating, String date) {
+    public Movie(Long id, String title, String image, String image2, String overview, String rating, String date) {
         this.id = id;
         this.title = title;
         this.image = image;
@@ -95,7 +95,7 @@ public class Movie implements Parcelable {
 
 }
     protected Movie(Parcel in) {
-        id = in.readInt();
+        id = in.readLong();
         title = in.readString();
         image = in.readString();
         image2 = in.readString();
@@ -108,7 +108,7 @@ public class Movie implements Parcelable {
         @Override
         public Movie createFromParcel(Parcel in) {
             Movie movie =new Movie();
-            movie.id = in.readInt();
+            movie.id = in.readLong();
             movie.title =in.readString();
             movie.image= in.readString();
             movie.image2 = in.readString();
@@ -131,7 +131,7 @@ public class Movie implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
+        dest.writeLong(id);
         dest.writeString(title);
         dest.writeString(image);
         dest.writeString(image2);

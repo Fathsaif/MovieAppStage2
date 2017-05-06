@@ -42,7 +42,10 @@ public class MovieProvider extends ContentProvider {
         Cursor cursor;
         switch (sUriMatcher.match(uri)){
             case CODE_MOVIE:
-             cursor  =  db.query(MovieContract.MovieEntry.TABLE_NAME,null,null,null,null,null,null);
+             cursor  =  db.query(MovieContract.MovieEntry.TABLE_NAME,projection,
+                     selection,
+                     selectionArgs,
+                     null,null,sortOrder);
                 break;
             default:
                 throw  new UnsupportedOperationException("invalid uri"+uri);
@@ -62,7 +65,7 @@ public class MovieProvider extends ContentProvider {
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        Uri mUri ;
+        Uri mUri = null;
         switch (sUriMatcher.match(uri)){
             case CODE_MOVIE:
                long id = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, values);
@@ -70,7 +73,7 @@ public class MovieProvider extends ContentProvider {
                     mUri = ContentUris.withAppendedId(MovieContract.MovieEntry.CONTENT_URI,id);
                 }
                 else {
-                    throw new android.database.SQLException("invalid to insert new row");
+                    throw new android.database.SQLException("failed to insert new row "+mUri);
                 }
                 break;
             default:
@@ -86,9 +89,8 @@ public class MovieProvider extends ContentProvider {
 
         int movieDeleted;
         switch (sUriMatcher.match(uri)){
-            case CODE_MOVIE_WITH_TITLE:
-                String id = uri.getPathSegments().get(1);
-               movieDeleted = db.delete(MovieContract.MovieEntry.TABLE_NAME,"_id=?",new String[]{id});
+            case CODE_MOVIE:
+               movieDeleted = db.delete(MovieContract.MovieEntry.TABLE_NAME,selection,selectionArgs);
                 break;
             default:
                 throw new UnsupportedOperationException("invalid uri"+uri);

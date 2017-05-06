@@ -4,8 +4,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     >
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -20,13 +20,6 @@
         android:orientation="vertical">
 
         <include layout="@layout/movie_info" />
-
-        <TextView
-            android:id="@+id/movie_date_released"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium" />
-
         <TextView
             android:id="@+id/movie_overview"
             android:layout_width="wrap_content"
@@ -35,30 +28,36 @@
             android:textColor="@android:color/black" />
 
     </LinearLayout>
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="2">
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    >
 
-    <ScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_weight="2"
-        android:padding="@dimen/meduim_padding">
        <android.support.v7.widget.RecyclerView
-           android:layout_width="match_parent"
+           android:id="@+id/review_list"
+           android:layout_width="wrap_content"
            android:layout_height="wrap_content"
            tools:listitem="@layout/movie_review"
            >
 
        </android.support.v7.widget.RecyclerView>
 
-    </ScrollView>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/trailers_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            tools:listitem="@layout/movie_trailers"
+            >
+        </android.support.v7.widget.RecyclerView>
+</LinearLayout>
+        </ScrollView>
     </LinearLayout>
-    <android.support.v7.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        tools:listitem="@layout/movie_trailers"
-        >
-
-    </android.support.v7.widget.RecyclerView>
 </LinearLayout>
 
 

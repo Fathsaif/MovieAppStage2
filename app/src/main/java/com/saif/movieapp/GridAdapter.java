@@ -82,6 +82,7 @@ public class GridAdapter extends BaseAdapter {
         }
     }
     public void setmMoviesData (List<Movie> mMoviesData){
+        movies.clear();
         movies =mMoviesData;
         notifyDataSetChanged();
     }
